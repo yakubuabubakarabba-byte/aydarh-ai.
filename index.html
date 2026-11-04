@@ -2,447 +2,787 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080d18">
-<meta name="description" content="AYDARH - Your personal AI assistant">
-<link rel="manifest" href="manifest.json">
-<title>AYDARH AI</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="AYDARH - Your personal AI assistant">
+  <link rel="manifest" href="manifest.json">
+  <title>AYDARH AI</title>
 
-<style>
-:root {
-  --bg:#080d18;
-  --panel:#111a2b;
-  --blue:#20aaff;
-  --cyan:#50d9ff;
-  --red:#ff405c;
-  --text:#f2f7ff;
-  --muted:#8495ad;
-}
-* {box-sizing:border-box}
-body {
-  margin:0;
-  background:radial-gradient(ellipse at 50% 0%,#122846,var(--bg) 65%);
-  color:var(--text);
-  font-family:Arial,sans-serif;
-  min-height:100vh;
-}
-header {
-  padding:22px 18px 12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.brand {font-size:24px;font-weight:800;letter-spacing:4px}
-.brand span {color:var(--blue)}
-.status {font-size:11px;color:#54e5ad}
-.status i {
-  display:inline-block;width:7px;height:7px;
-  background:#54e5ad;border-radius:50%;margin-right:5px;
-}
-main {max-width:650px;margin:auto;padding:10px 17px 30px}
-.greeting {text-align:center;margin-top:25px}
-.greeting h1 {font-size:25px;margin-bottom:7px}
-.greeting p {color:var(--muted);font-size:13px}
-.orb-area {display:flex;justify-content:center;margin:35px auto 25px}
-.orb {
-  width:190px;height:190px;border-radius:50%;
-  border:1px solid #248bca;
-  display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle,#153a60 0%,#0c1b31 55%,#080d18 75%);
-  box-shadow:0 0 25px #168bce66,inset 0 0 35px #168bce55;
-  position:relative;
-}
-.orb:before,.orb:after {
-  content:"";position:absolute;
-  border:1px solid #269ed966;border-radius:50%;
-  inset:-12px;animation:pulse 3s infinite;
-  pointer-events:none;
-}
-.orb:after {inset:-25px;animation-delay:1s}
-.orb button {
-  background:none;border:0;color:var(--cyan);
-  font-size:53px;cursor:pointer;z-index:2;
-  width:100%;height:100%;border-radius:50%;
-  position:relative;
-}
-.orb.listening {
-  box-shadow:0 0 50px #20aaff;
-  animation:glow 1s infinite alternate;
-}
-@keyframes pulse {50% {transform:scale(1.08);opacity:.3}}
-@keyframes glow {to {box-shadow:0 0 65px #20aaff}}
-.caption {text-align:center;color:var(--muted);font-size:12px}
-.panel {
-  background:#111a2be8;border:1px solid #233752;
-  border-radius:17px;padding:15px;margin-top:18px;
-}
-.panel-title {
-  font-size:12px;color:var(--cyan);
-  letter-spacing:1.5px;margin-bottom:12px;
-}
-select,input {
-  background:#091322;color:white;
-  border:1px solid #30435c;border-radius:10px;
-  padding:12px;width:100%;outline:none;
-}
-.chat {
-  height:300px;overflow-y:auto;
-  display:flex;flex-direction:column;gap:10px;
-}
-.msg {
-  padding:11px 13px;border-radius:12px;
-  max-width:90%;font-size:13px;line-height:1.5;
-  white-space:pre-wrap;overflow-wrap:anywhere;
-}
-.bot {background:#172c46;align-self:flex-start}
-.user {background:#075a91;align-self:flex-end}
-.input-row {display:flex;gap:8px;margin-top:12px}
-.input-row input {flex:1;min-width:0}
-button.action {
-  border:0;border-radius:10px;padding:12px 15px;
-  color:white;background:#087fc4;font-weight:bold;
-}
-button.action:disabled {opacity:.5}
-button.action:active {opacity:.7}
-.quick {display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.quick button {
-  background:#14243a;border:1px solid #2b4260;
-  color:#dcecff;padding:13px 8px;border-radius:10px;
-  font-size:12px;
-}
-#thinking {color:var(--cyan);font-size:12px;margin-top:10px}
-footer {text-align:center;color:#65758c;font-size:10px;padding:25px}
-</style>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #101e30;
+      --panel2: #14263b;
+      --blue: #19c8ff;
+      --red: #ff435d;
+      --text: #edf6ff;
+      --muted: #91a7bd;
+      --border: #263c53;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #102b45, var(--bg) 55%);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: bold;
+    }
+
+    .hidden { display: none !important; }
+
+    .app {
+      width: 100%;
+      max-width: 850px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0 20px;
+    }
+
+    .brand {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: var(--blue);
+    }
+
+    .brand span { color: var(--red); }
+
+    .status {
+      color: #70f0b0;
+      font-size: 12px;
+    }
+
+    .panel {
+      background: rgba(16,30,48,.94);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 15px;
+    }
+
+    h2 { margin-top: 0; }
+
+    .muted { color: var(--muted); font-size: 13px; }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: #091727;
+      color: white;
+      margin: 8px 0;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--blue);
+    }
+
+    .primary {
+      width: 100%;
+      background: var(--blue);
+      color: #00121c;
+      margin-top: 10px;
+    }
+
+    .secondary {
+      background: var(--panel2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .danger {
+      background: #542333;
+      color: #ffdce2;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-bottom: 14px;
+    }
+
+    .tabs button { white-space: nowrap; }
+
+    .tab-active {
+      background: var(--blue);
+      color: #00121c;
+    }
+
+    .orb-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    #micButton {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      color: white;
+      background: radial-gradient(circle, #1d9dcf, #123b68);
+      border: 3px solid var(--blue);
+      box-shadow: 0 0 30px #19c8ff55;
+      font-size: 30px;
+    }
+
+    #micButton.listening {
+      background: radial-gradient(circle, #ff5369, #76243b);
+      border-color: var(--red);
+      box-shadow: 0 0 30px #ff435d88;
+    }
+
+    #chat {
+      height: 43vh;
+      min-height: 260px;
+      max-height: 500px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 5px 2px;
+    }
+
+    .message {
+      max-width: 88%;
+      padding: 13px;
+      border-radius: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: #124767;
+      border: 1px solid #187da8;
+    }
+
+    .assistant {
+      align-self: flex-start;
+      background: #192b40;
+      border: 1px solid #2c4762;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chat-input input { flex: 1; min-width: 0; }
+
+    .send {
+      background: var(--blue);
+      color: #00121c;
+      margin-top: 0;
+    }
+
+    .memory-item {
+      padding: 13px;
+      margin: 10px 0;
+      border-radius: 12px;
+      background: #0b1a2a;
+      border: 1px solid var(--border);
+      overflow-wrap: anywhere;
+    }
+
+    .memory-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .memory-actions button { flex: 1; }
+
+    .error { color: #ff8796; }
+    .success { color: #70f0b0; }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 15px;
+    }
+  </style>
 </head>
 
 <body>
-<header>
-  <div class="brand">AY<span>DARH</span></div>
-  <div class="status"><i></i> AI ENGINE CONNECTED</div>
-</header>
+<div class="app">
 
-<main>
-  <section class="greeting">
-    <h1>Good day. I'm AYDARH.</h1>
-    <p>Your intelligent personal assistant. How can I help?</p>
-  </section>
-
-  <div class="orb-area">
-    <div class="orb" id="orb">
-      <button id="micButton" type="button"
-        aria-label="Speak to AYDARH">◉</button>
+  <header>
+    <div>
+      <div class="brand">AYDAR<span>H</span></div>
+      <div class="muted">PERSONAL AI ASSISTANT</div>
     </div>
-  </div>
+    <div class="status" id="connectionStatus">● Engine online</div>
+  </header>
 
-  <div class="caption" id="voiceStatus">
-    Tap the circle to speak
-  </div>
+  <!-- LOGIN -->
+  <section id="loginScreen" class="panel">
+    <h2>Welcome back.</h2>
+    <p class="muted">Sign in to access your personal AYDARH assistant.</p>
 
-  <section class="panel">
-    <div class="panel-title">LANGUAGE SETTINGS</div>
-    <select id="language">
-      <option value="en-NG">English</option>
-      <option value="ha-NG">Hausa</option>
-      <option value="en-NG">Nigerian Pidgin</option>
-    </select>
+    <form id="loginForm">
+      <label for="password">Your AYDARH password</label>
+      <input id="password" type="password"
+        placeholder="Enter your password" required autocomplete="current-password">
+      <button class="primary" id="loginButton" type="submit">SIGN IN</button>
+    </form>
+
+    <p id="loginMessage" class="muted"></p>
   </section>
 
-  <section class="panel">
-    <div class="panel-title">QUICK COMMANDS</div>
-    <div class="quick">
-      <button data-question="Who are you?">Who are you?</button>
-      <button data-question="What can you do?">Your abilities</button>
-      <button data-question="Give me motivation">Motivate me</button>
-      <button data-question="Help me organize my day">Plan my day</button>
+  <!-- MAIN APPLICATION -->
+  <main id="mainApp" class="hidden">
+
+    <div class="tabs">
+      <button class="secondary tab-active" data-tab="assistantTab">Assistant</button>
+      <button class="secondary" data-tab="memoryTab">Memory</button>
+      <button class="secondary" data-tab="settingsTab">Settings</button>
     </div>
-  </section>
 
-  <section class="panel">
-    <div class="panel-title">CONVERSATION WITH AYDARH</div>
+    <!-- ASSISTANT -->
+    <section id="assistantTab">
+      <div class="panel">
+        <h2>How can I help you?</h2>
+        <p class="muted">Talk to AYDARH or type your message below.</p>
 
-    <div class="chat" id="chat">
-      <div class="msg bot">
-        Hello! I'm AYDARH, your personal AI assistant.
+        <label for="language">Communication language</label>
+        <select id="language">
+          <option value="en-NG">English</option>
+          <option value="ha-NG">Hausa</option>
+          <option value="en-NG">Nigerian Pidgin</option>
+        </select>
 
-        I'm ready to have a real conversation with you.
-        What shall we work on today?
+        <div class="orb-wrap">
+          <button id="micButton" title="Start voice input" type="button">🎙</button>
+        </div>
+        <p id="voiceStatus" class="muted" style="text-align:center">
+          Tap the microphone to speak
+        </p>
+
+        <div id="chat">
+          <div class="message assistant">
+            Hello! I'm AYDARH, your personal AI assistant. How can I help you today?
+          </div>
+        </div>
+
+        <form id="chatForm" class="chat-input">
+          <input id="messageInput" placeholder="Message AYDARH..." autocomplete="off" required>
+          <button class="send" type="submit">SEND</button>
+        </form>
       </div>
-    </div>
 
-    <div id="thinking"></div>
+      <div class="panel">
+        <h3>Quick commands</h3>
+        <div class="tabs">
+          <button class="secondary quick" data-message="Introduce yourself and explain what you can do.">About you</button>
+          <button class="secondary quick" data-message="Help me plan my day.">Plan my day</button>
+          <button class="secondary quick" data-message="Teach me something useful today.">Teach me</button>
+        </div>
+      </div>
 
-    <div class="input-row">
-      <input id="message" placeholder="Message AYDARH..."
-        autocomplete="off">
-      <button class="action" id="sendButton">SEND</button>
-    </div>
-  </section>
+      <div id="suggestionArea"></div>
+    </section>
 
-  <section class="panel">
-    <button class="action" id="clearButton" style="width:100%">
-      CLEAR CONVERSATION
-    </button>
-  </section>
-</main>
+    <!-- MEMORY -->
+    <section id="memoryTab" class="hidden">
+      <div class="panel">
+        <h2>Memory centre</h2>
+        <p class="muted">
+          AYDARH only saves a suggested memory after you approve it.
+        </p>
+        <button class="secondary" id="refreshMemory">REFRESH MEMORIES</button>
+      </div>
 
-<footer>AYDARH AI · HYBRID PERSONAL ASSISTANT · VERSION 0.2.0</footer>
+      <div class="panel">
+        <h3>Pending approval</h3>
+        <div id="pendingMemories" class="muted">Loading...</div>
+      </div>
+
+      <div class="panel">
+        <h3>Approved memories</h3>
+        <div id="approvedMemories" class="muted">Loading...</div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settingsTab" class="hidden">
+      <div class="panel">
+        <h2>Settings</h2>
+        <p>Assistant: AYDARH</p>
+        <p>Backend: Cloudflare Workers AI</p>
+        <p>Memory: Approval required</p>
+        <p>Session: Expires after 12 hours</p>
+        <button class="danger" id="logoutButton">LOG OUT</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>AYDARH AI · PERSONAL ASSISTANT · VERSION 0.3.0</footer>
+</div>
 
 <script>
-const API_URL =
-  "https://aydarh-ai-engine.yakubuabubakarabba.workers.dev/chat";
+"use strict";
 
-const chat = document.getElementById("chat");
-const orb = document.getElementById("orb");
-const micButton = document.getElementById("micButton");
-const voiceStatus = document.getElementById("voiceStatus");
-const language = document.getElementById("language");
-const messageInput = document.getElementById("message");
-const sendButton = document.getElementById("sendButton");
-const thinking = document.getElementById("thinking");
+const API = "https://aydarh-ai-engine.yakubuabubakarabba.workers.dev";
+const TOKEN_KEY = "aydarh_session_v03";
 
-let history = [];
+let token = sessionStorage.getItem(TOKEN_KEY) || "";
+let conversation = [];
 let recognition = null;
-let isListening = false;
-let busy = false;
+let speakingEnabled = true;
 
-function addMessage(message, type) {
-  const el = document.createElement("div");
-  el.className = "msg " + type;
-  el.textContent = message;
-  chat.appendChild(el);
-  chat.scrollTop = chat.scrollHeight;
+const $ = id => document.getElementById(id);
+
+function authHeaders() {
+  return {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + token
+  };
 }
 
-function speak(message) {
+async function api(path, options = {}) {
+  const response = await fetch(API + path, {
+    ...options,
+    headers: {
+      ...authHeaders(),
+      ...(options.headers || {})
+    }
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (response.status === 401) {
+    logout();
+    throw new Error("Your session has expired. Please sign in again.");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.error || "Request failed");
+  }
+
+  return data;
+}
+
+function showLogin() {
+  $("loginScreen").classList.remove("hidden");
+  $("mainApp").classList.add("hidden");
+}
+
+function showApp() {
+  $("loginScreen").classList.add("hidden");
+  $("mainApp").classList.remove("hidden");
+}
+
+function logout() {
+  token = "";
+  sessionStorage.removeItem(TOKEN_KEY);
+  conversation = [];
+  showLogin();
+  $("loginMessage").textContent = "You have been logged out.";
+}
+
+$("loginForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const password = $("password").value;
+  const button = $("loginButton");
+
+  button.disabled = true;
+  button.textContent = "SIGNING IN...";
+  $("loginMessage").textContent = "";
+
+  try {
+    const response = await fetch(API + "/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Login failed");
+    }
+
+    token = data.token;
+    sessionStorage.setItem(TOKEN_KEY, token);
+    $("password").value = "";
+    showApp();
+    await loadMemories();
+  } catch (error) {
+    $("loginMessage").textContent = error.message;
+    $("loginMessage").className = "error";
+  } finally {
+    button.disabled = false;
+    button.textContent = "SIGN IN";
+  }
+});
+
+function addMessage(role, content) {
+  const div = document.createElement("div");
+  div.className = "message " + role;
+  div.textContent = content;
+  $("chat").appendChild(div);
+  $("chat").scrollTop = $("chat").scrollHeight;
+}
+
+async function sendMessage(message) {
+  message = message.trim();
+  if (!message) return;
+
+  addMessage("user", message);
+  conversation.push({ role: "user", content: message });
+
+  $("messageInput").value = "";
+  $("connectionStatus").textContent = "● AYDARH is thinking...";
+
+  try {
+    const data = await api("/chat", {
+      method: "POST",
+      body: JSON.stringify({ messages: conversation })
+    });
+
+    const reply = data.reply || "I couldn't generate a response.";
+
+    conversation.push({ role: "assistant", content: reply });
+    conversation = conversation.slice(-12);
+
+    addMessage("assistant", reply);
+
+    if (data.memorySuggestion) {
+      showMemorySuggestion(data.memorySuggestion);
+    }
+
+    if (speakingEnabled) speak(reply);
+    $("connectionStatus").textContent = "● Engine online";
+
+  } catch (error) {
+    addMessage("assistant", "Sorry, something went wrong: " + error.message);
+    $("connectionStatus").textContent = "● Connection issue";
+  }
+}
+
+$("chatForm").addEventListener("submit", event => {
+  event.preventDefault();
+  sendMessage($("messageInput").value);
+});
+
+document.querySelectorAll(".quick").forEach(button => {
+  button.addEventListener("click", () => {
+    sendMessage(button.dataset.message);
+  });
+});
+
+// VOICE INPUT
+function setupRecognition() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    $("voiceStatus").textContent =
+      "Voice recognition is not supported by this browser. Try Chrome.";
+    $("micButton").disabled = true;
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    $("micButton").classList.add("listening");
+    $("voiceStatus").textContent = "Listening...";
+  };
+
+  recognition.onend = () => {
+    $("micButton").classList.remove("listening");
+    $("voiceStatus").textContent = "Tap the microphone to speak";
+  };
+
+  recognition.onerror = event => {
+    $("voiceStatus").textContent = "Voice error: " + event.error;
+  };
+
+  recognition.onresult = event => {
+    const transcript = event.results[0][0].transcript;
+    sendMessage(transcript);
+  };
+}
+
+$("micButton").addEventListener("click", () => {
+  if (!recognition) {
+    setupRecognition();
+  }
+
+  if (!recognition) return;
+
+  recognition.lang = $("language").value;
+
+  try {
+    recognition.start();
+  } catch {
+    $("voiceStatus").textContent =
+      "Please wait a moment and try again.";
+  }
+});
+
+// VOICE OUTPUT
+function speak(text) {
   if (!("speechSynthesis" in window)) return;
 
   window.speechSynthesis.cancel();
 
-  const speech = new SpeechSynthesisUtterance(message);
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = $("language").value;
+  utterance.rate = 1;
+  utterance.pitch = 1;
 
-  speech.lang = language.value;
-  speech.rate = 0.95;
-  speech.pitch = 1;
-
-  window.speechSynthesis.speak(speech);
+  window.speechSynthesis.speak(utterance);
 }
 
-function setBusy(value) {
-  busy = value;
-  sendButton.disabled = value;
-  sendButton.textContent = value ? "WAIT..." : "SEND";
-  thinking.textContent = value ? "AYDARH is thinking..." : "";
+// MEMORY APPROVAL
+function showMemorySuggestion(memory) {
+  const area = $("suggestionArea");
+  area.innerHTML = "";
+
+  const panel = document.createElement("div");
+  panel.className = "panel";
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Memory approval requested";
+
+  const text = document.createElement("p");
+  text.textContent = memory.text;
+
+  const note = document.createElement("p");
+  note.className = "muted";
+  note.textContent = "Save this information for future conversations?";
+
+  const actions = document.createElement("div");
+  actions.className = "memory-actions";
+
+  const approve = document.createElement("button");
+  approve.className = "primary";
+  approve.textContent = "APPROVE";
+
+  const reject = document.createElement("button");
+  reject.className = "danger";
+  reject.textContent = "REJECT";
+
+  approve.addEventListener("click", async () => {
+    try {
+      await api("/memory/approve", {
+        method: "POST",
+        body: JSON.stringify({ id: memory.id })
+      });
+
+      panel.remove();
+      addMessage("assistant", "Memory approved and saved.");
+      await loadMemories();
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  reject.addEventListener("click", async () => {
+    try {
+      await api("/memory/reject", {
+        method: "POST",
+        body: JSON.stringify({ id: memory.id })
+      });
+
+      panel.remove();
+      addMessage("assistant", "Memory suggestion rejected.");
+      await loadMemories();
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  actions.append(approve, reject);
+  panel.append(heading, text, note, actions);
+  area.appendChild(panel);
 }
 
-async function askAYDARH(message) {
-  if (busy) return;
+async function loadMemories() {
+  if (!token) return;
 
-  setBusy(true);
-
-  const updatedHistory = [
-    ...history,
-    { role: "user", content: message }
-  ];
+  $("pendingMemories").textContent = "Loading...";
+  $("approvedMemories").textContent = "Loading...";
 
   try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        messages: updatedHistory
-      })
+    const [pendingData, approvedData] = await Promise.all([
+      api("/memory/pending"),
+      api("/memory/list")
+    ]);
+
+    renderPending(pendingData.pending || []);
+    renderApproved(approvedData.memories || []);
+
+  } catch (error) {
+    $("pendingMemories").textContent = error.message;
+    $("approvedMemories").textContent = error.message;
+  }
+}
+
+function renderPending(memories) {
+  const container = $("pendingMemories");
+  container.innerHTML = "";
+
+  if (!memories.length) {
+    container.textContent = "No memories waiting for approval.";
+    return;
+  }
+
+  memories.forEach(memory => {
+    const item = document.createElement("div");
+    item.className = "memory-item";
+
+    const text = document.createElement("p");
+    text.textContent = memory.text;
+
+    const actions = document.createElement("div");
+    actions.className = "memory-actions";
+
+    const approve = document.createElement("button");
+    approve.className = "primary";
+    approve.textContent = "Approve";
+
+    const reject = document.createElement("button");
+    reject.className = "danger";
+    reject.textContent = "Reject";
+
+    approve.onclick = async () => {
+      try {
+        await api("/memory/approve", {
+          method: "POST",
+          body: JSON.stringify({ id: memory.id })
+        });
+        await loadMemories();
+      } catch (e) { alert(e.message); }
+    };
+
+    reject.onclick = async () => {
+      try {
+        await api("/memory/reject", {
+          method: "POST",
+          body: JSON.stringify({ id: memory.id })
+        });
+        await loadMemories();
+      } catch (e) { alert(e.message); }
+    };
+
+    actions.append(approve, reject);
+    item.append(text, actions);
+    container.appendChild(item);
+  });
+}
+
+function renderApproved(memories) {
+  const container = $("approvedMemories");
+  container.innerHTML = "";
+
+  if (!memories.length) {
+    container.textContent = "No approved memories yet.";
+    return;
+  }
+
+  memories.forEach(memory => {
+    const item = document.createElement("div");
+    item.className = "memory-item";
+
+    const text = document.createElement("p");
+    text.textContent = memory.text;
+
+    const remove = document.createElement("button");
+    remove.className = "danger";
+    remove.textContent = "DELETE MEMORY";
+
+    remove.onclick = async () => {
+      if (!confirm("Permanently delete this memory?")) return;
+
+      try {
+        await api("/memory/delete", {
+          method: "POST",
+          body: JSON.stringify({ id: memory.id })
+        });
+        await loadMemories();
+      } catch (e) { alert(e.message); }
+    };
+
+    item.append(text, remove);
+    container.appendChild(item);
+  });
+}
+
+$("refreshMemory").addEventListener("click", loadMemories);
+$("logoutButton").addEventListener("click", logout);
+
+// TABS
+document.querySelectorAll("[data-tab]").forEach(button => {
+  button.addEventListener("click", () => {
+    ["assistantTab", "memoryTab", "settingsTab"].forEach(id => {
+      $(id).classList.add("hidden");
     });
 
-    let data;
+    $(button.dataset.tab).classList.remove("hidden");
 
+    document.querySelectorAll("[data-tab]").forEach(b => {
+      b.classList.remove("tab-active");
+    });
+
+    button.classList.add("tab-active");
+
+    if (button.dataset.tab === "memoryTab") loadMemories();
+  });
+});
+
+// STARTUP
+async function start() {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+
+  if (token) {
+    showApp();
     try {
-      data = await response.json();
+      await loadMemories();
     } catch {
-      throw new Error("Invalid response from AI server.");
+      logout();
     }
-
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.error || "AYDARH could not respond."
-      );
-    }
-
-    const answer = data.reply;
-
-    if (!answer) {
-      throw new Error("AYDARH returned an empty response.");
-    }
-
-    history = [
-      ...updatedHistory,
-      { role: "assistant", content: answer }
-    ];
-
-    if (history.length > 12) {
-      history = history.slice(-12);
-    }
-
-    addMessage(answer, "bot");
-    speak(answer);
-
-  } catch (error) {
-    console.error("AYDARH connection error:", error);
-
-    addMessage(
-      "I couldn't connect to my AI brain. " +
-      error.message +
-      " Please check your internet connection and try again.",
-      "bot"
-    );
-
-    voiceStatus.textContent = "AI connection problem.";
-  } finally {
-    setBusy(false);
+  } else {
+    showLogin();
   }
+
+  setupRecognition();
 }
 
-function sendMessage() {
-  const message = messageInput.value.trim();
-
-  if (!message || busy) return;
-
-  addMessage(message, "user");
-  messageInput.value = "";
-
-  askAYDARH(message);
-}
-
-function quickAsk(question) {
-  if (busy) return;
-
-  addMessage(question, "user");
-  askAYDARH(question);
-}
-
-function stopListening() {
-  if (recognition && isListening) {
-    recognition.stop();
-  }
-}
-
-function startListening() {
-  if (busy) {
-    voiceStatus.textContent =
-      "Please wait for AYDARH to finish responding.";
-    return;
-  }
-
-  if (isListening) {
-    stopListening();
-    return;
-  }
-
-  const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-  if (!SpeechRecognition) {
-    voiceStatus.textContent =
-      "Speech recognition is not supported. Try updated Chrome.";
-    return;
-  }
-
-  try {
-    recognition = new SpeechRecognition();
-
-    recognition.lang = language.value;
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = function() {
-      isListening = true;
-      orb.classList.add("listening");
-      voiceStatus.textContent =
-        "AYDARH is listening... Speak now.";
-    };
-
-    recognition.onresult = function(event) {
-      const spoken = event.results[0][0].transcript.trim();
-
-      if (spoken) {
-        addMessage(spoken, "user");
-        askAYDARH(spoken);
-      }
-    };
-
-    recognition.onerror = function(event) {
-      voiceStatus.textContent =
-        "Voice error: " + event.error;
-      console.error("Speech error:", event.error);
-    };
-
-    recognition.onend = function() {
-      isListening = false;
-      orb.classList.remove("listening");
-      recognition = null;
-
-      if (!busy) {
-        voiceStatus.textContent =
-          "Tap the circle to speak again.";
-      }
-    };
-
-    recognition.start();
-
-    voiceStatus.textContent = "Starting microphone...";
-
-  } catch (error) {
-    isListening = false;
-    orb.classList.remove("listening");
-
-    voiceStatus.textContent =
-      "Could not start microphone: " + error.message;
-
-    console.error(error);
-  }
-}
-
-micButton.addEventListener("click", startListening);
-sendButton.addEventListener("click", sendMessage);
-
-messageInput.addEventListener("keydown", function(event) {
-  if (event.key === "Enter") {
-    sendMessage();
-  }
-});
-
-document.querySelectorAll("[data-question]").forEach(button => {
-  button.addEventListener("click", function() {
-    quickAsk(this.dataset.question);
-  });
-});
-
-document.getElementById("clearButton").addEventListener(
-  "click", function() {
-    history = [];
-    chat.innerHTML = "";
-
-    addMessage(
-      "Conversation cleared. I'm ready for a fresh conversation!",
-      "bot"
-    );
-
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-  }
-);
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
-    navigator.serviceWorker.register("./sw.js")
-      .catch(error => console.log("Offline setup:", error));
-  });
-}
+start();
 </script>
 </body>
 </html>
