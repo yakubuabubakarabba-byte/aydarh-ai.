@@ -193,7 +193,10 @@ const orb = document.getElementById("orb");
 const voiceStatus = document.getElementById("voiceStatus");
 const language = document.getElementById("language");
 
-function addMessage(message,type) {
+let recognition = null;
+let isListening = false;
+
+function addMessage(message, type) {
   const el = document.createElement("div");
   el.className = "msg " + type;
   el.textContent = message;
@@ -202,12 +205,18 @@ function addMessage(message,type) {
 }
 
 function speak(message) {
-  if (!("speechSynthesis" in window)) return;
-  speechSynthesis.cancel();
+  if (!("speechSynthesis" in window)) {
+    voiceStatus.textContent = "Speech output is not supported.";
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
   const speech = new SpeechSynthesisUtterance(message);
   speech.lang = language.value;
   speech.rate = 0.95;
-  speechSynthesis.speak(speech);
+
+  window.speechSynthesis.speak(speech);
 }
 
 function reply(message) {
@@ -215,7 +224,7 @@ function reply(message) {
   let answer;
 
   if (text.includes("who are you")) {
-    answer = "I am AYDARH, your personal AI assistant. I am being developed to help you with your daily life, learning, planning and trading.";
+    answer = "I am AYDARH, your personal AI assistant. I am being developed to help you with daily life, learning, planning and trading.";
   } else if (text.includes("what can you do")) {
     answer = "I am currently in development. My planned abilities include voice conversations, reminders, daily planning, learning assistance and AlphaX trading support.";
   } else if (text.includes("motivation")) {
@@ -232,69 +241,130 @@ function reply(message) {
     answer = "I have received your message. My full AI intelligence is not connected yet. That is one of our next development stages.";
   }
 
-  addMessage(answer,"bot");
+  addMessage(answer, "bot");
   speak(answer);
 }
 
 function sendMessage() {
   const input = document.getElementById("message");
   const message = input.value.trim();
+
   if (!message) return;
-  addMessage(message,"user");
+
+  addMessage(message, "user");
   input.value = "";
   reply(message);
 }
 
 function quickAsk(question) {
-  addMessage(question,"user");
+  addMessage(question, "user");
   reply(question);
 }
 
-function startListening() {
-  const Recognition = window.SpeechRecognition ||
-                      window.webkitSpeechRecognition;
+function stopListening() {
+  if (recognition && isListening) {
+    recognition.stop();
+  }
+}
 
-  if (!Recognition) {
-    voiceStatus.textContent =
-      "Voice recognition unavailable. Try Chrome on Android.";
+function startListening() {
+  if (isListening) {
+    stopListening();
     return;
   }
 
-  const recognition = new Recognition();
-  recognition.lang = language.value;
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
-  recognition.onstart = () => {
-    orb.classList.add("listening");
-    voiceStatus.textContent = "AYDARH is listening...";
-  };
+  if (!SpeechRecognition) {
+    voiceStatus.textContent =
+      "Speech recognition is not supported by this browser. Try updated Google Chrome.";
+    addMessage(
+      "Your browser does not provide speech recognition. Please try updated Google Chrome.",
+      "bot"
+    );
+    return;
+  }
 
-  recognition.onresult = (event) => {
-    const spoken = event.results[0][0].transcript;
-    addMessage(spoken,"user");
-    reply(spoken);
-  };
+  try {
+    recognition = new SpeechRecognition();
 
-  recognition.onerror = (event) => {
-    voiceStatus.textContent = "Voice error: " + event.error;
-  };
+    recognition.lang = language.value;
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-  recognition.onend = () => {
+    recognition.onstart = function() {
+      isListening = true;
+      orb.classList.add("listening");
+      voiceStatus.textContent = "AYDARH is listening... Speak now.";
+    };
+
+    recognition.onresult = function(event) {
+      const spoken = event.results[0][0].transcript;
+
+      if (spoken && spoken.trim()) {
+        addMessage(spoken, "user");
+        reply(spoken);
+      } else {
+        voiceStatus.textContent = "I didn't hear anything. Try again.";
+      }
+    };
+
+    recognition.onerror = function(event) {
+      const errors = {
+        "not-allowed": "Microphone permission denied. Check your browser settings.",
+        "service-not-allowed": "Speech recognition service is blocked.",
+        "no-speech": "I didn't hear you. Please speak clearly and try again.",
+        "audio-capture": "No microphone was detected.",
+        "network": "Speech recognition network error. Check your internet connection.",
+        "aborted": "Listening was cancelled."
+      };
+
+      voiceStatus.textContent =
+        errors[event.error] || "Microphone error: " + event.error;
+
+      console.error("AYDARH microphone error:", event.error);
+    };
+
+    recognition.onend = function() {
+      isListening = false;
+      orb.classList.remove("listening");
+
+      if (voiceStatus.textContent.includes("listening")) {
+        voiceStatus.textContent = "Tap the circle to speak again.";
+      }
+
+      recognition = null;
+    };
+
+    recognition.start();
+
+    voiceStatus.textContent = "Starting microphone...";
+
+  } catch (error) {
+    isListening = false;
     orb.classList.remove("listening");
-    voiceStatus.textContent = "Tap the circle to speak";
-  };
 
-  recognition.start();
+    voiceStatus.textContent =
+      "Could not start microphone: " + error.message;
+
+    console.error("AYDARH microphone startup error:", error);
+  }
 }
 
+window.startListening = startListening;
+window.sendMessage = sendMessage;
+window.quickAsk = quickAsk;
+
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
+  window.addEventListener("load", function() {
     navigator.serviceWorker.register("./sw.js")
-      .catch(error => console.log("Offline setup:",error));
+      .catch(function(error) {
+        console.log("Offline setup:", error);
+      });
   });
 }
 </script>
-</body>
-</html>
 
