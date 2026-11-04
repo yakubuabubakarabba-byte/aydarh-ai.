@@ -196,6 +196,9 @@ const chat = document.getElementById("chat");
 const orb = document.getElementById("orb");
 const voiceStatus = document.getElementById("voiceStatus");
 const language = document.getElementById("language");
+  document.getElementById("micButton").addEventListener("click", function() {
+  startListening();
+});
 
 let recognition = null;
 let isListening = false;
