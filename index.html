@@ -1,1 +1,300 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
+<meta name="description" content="AYDARH - Your personal multilingual AI assistant">
+<link rel="manifest" href="manifest.json">
+<title>AYDARH AI</title>
+
+<style>
+:root {
+  --bg:#080d18;
+  --panel:#111a2b;
+  --blue:#20aaff;
+  --cyan:#50d9ff;
+  --red:#ff405c;
+  --text:#f2f7ff;
+  --muted:#8495ad;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:radial-gradient(ellipse at 50% 0%,#122846,var(--bg) 65%);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+header {
+  padding:22px 18px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.brand {font-size:24px;font-weight:800;letter-spacing:4px}
+.brand span {color:var(--blue)}
+.status {font-size:11px;color:#54e5ad}
+.status i {
+  display:inline-block;
+  width:7px;height:7px;
+  background:#54e5ad;border-radius:50%;
+  margin-right:5px;
+}
+main {max-width:650px;margin:auto;padding:10px 17px 30px}
+.greeting {text-align:center;margin-top:25px}
+.greeting h1 {font-size:25px;margin-bottom:7px}
+.greeting p {color:var(--muted);font-size:13px}
+.orb-area {
+  display:flex;justify-content:center;
+  margin:35px auto 25px;
+}
+.orb {
+  width:190px;height:190px;border-radius:50%;
+  border:1px solid #248bca;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle,#153a60 0%,#0c1b31 55%,#080d18 75%);
+  box-shadow:0 0 25px #168bce66,inset 0 0 35px #168bce55;
+  position:relative;
+}
+.orb:before,.orb:after {
+  content:"";position:absolute;
+  border:1px solid #269ed966;border-radius:50%;
+  inset:-12px;animation:pulse 3s infinite;
+}
+.orb:after {inset:-25px;animation-delay:1s}
+.orb button {
+  background:none;border:0;color:var(--cyan);
+  font-size:53px;cursor:pointer;
+}
+.orb.listening {
+  box-shadow:0 0 50px #20aaff;
+  animation:glow 1s infinite alternate;
+}
+@keyframes pulse {
+  50% {transform:scale(1.08);opacity:.3}
+}
+@keyframes glow {
+  to {box-shadow:0 0 65px #20aaff}
+}
+.caption {text-align:center;color:var(--muted);font-size:12px}
+.panel {
+  background:#111a2be8;
+  border:1px solid #233752;
+  border-radius:17px;
+  padding:15px;margin-top:18px;
+}
+.panel-title {
+  font-size:12px;color:var(--cyan);
+  letter-spacing:1.5px;margin-bottom:12px;
+}
+select,input {
+  background:#091322;color:white;
+  border:1px solid #30435c;border-radius:10px;
+  padding:12px;width:100%;outline:none;
+}
+.chat {
+  height:220px;overflow-y:auto;
+  display:flex;flex-direction:column;gap:10px;
+}
+.msg {
+  padding:11px 13px;border-radius:12px;
+  max-width:88%;font-size:13px;line-height:1.5;
+  white-space:pre-wrap;overflow-wrap:anywhere;
+}
+.bot {background:#172c46;align-self:flex-start}
+.user {background:#075a91;align-self:flex-end}
+.input-row {display:flex;gap:8px;margin-top:12px}
+.input-row input {flex:1;min-width:0}
+button.action {
+  border:0;border-radius:10px;padding:12px 15px;
+  color:white;background:#087fc4;font-weight:bold;
+}
+button.action:active {opacity:.7}
+.quick {
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.quick button {
+  background:#14243a;border:1px solid #2b4260;
+  color:#dcecff;padding:13px 8px;border-radius:10px;
+  font-size:12px;
+}
+footer {
+  text-align:center;color:#65758c;
+  font-size:10px;padding:25px;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">AY<span>DARH</span></div>
+  <div class="status"><i></i> SYSTEM ONLINE</div>
+</header>
+
+<main>
+  <section class="greeting">
+    <h1>Good day. I'm AYDARH.</h1>
+    <p>Your personal assistant. How can I help you today?</p>
+  </section>
+
+  <div class="orb-area">
+    <div class="orb" id="orb">
+      <button onclick="startListening()" aria-label="Speak to AYDARH">◉</button>
+    </div>
+  </div>
+  <div class="caption" id="voiceStatus">
+    Tap the circle to speak
+  </div>
+
+  <section class="panel">
+    <div class="panel-title">LANGUAGE SETTINGS</div>
+    <select id="language">
+      <option value="en-NG">English</option>
+      <option value="ha-NG">Hausa</option>
+      <option value="en-NG">Nigerian Pidgin</option>
+    </select>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">QUICK COMMANDS</div>
+    <div class="quick">
+      <button onclick="quickAsk('Who are you?')">Who are you?</button>
+      <button onclick="quickAsk('What can you do?')">Your abilities</button>
+      <button onclick="quickAsk('Give me motivation')">Motivate me</button>
+      <button onclick="quickAsk('How is my day?')">Plan my day</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title">CONVERSATION</div>
+    <div class="chat" id="chat">
+      <div class="msg bot">
+        Hello! I'm AYDARH. I'm your personal assistant.
+
+        You can speak to me or type a message. Let's build something amazing!
+      </div>
+    </div>
+    <div class="input-row">
+      <input id="message" placeholder="Message AYDARH..."
+      onkeydown="if(event.key==='Enter')sendMessage()">
+      <button class="action" onclick="sendMessage()">SEND</button>
+    </div>
+  </section>
+</main>
+
+<footer>AYDARH AI · PERSONAL ASSISTANT · VERSION 0.1.0</footer>
+
+<script>
+const chat = document.getElementById("chat");
+const orb = document.getElementById("orb");
+const voiceStatus = document.getElementById("voiceStatus");
+const language = document.getElementById("language");
+
+function addMessage(message,type) {
+  const el = document.createElement("div");
+  el.className = "msg " + type;
+  el.textContent = message;
+  chat.appendChild(el);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function speak(message) {
+  if (!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const speech = new SpeechSynthesisUtterance(message);
+  speech.lang = language.value;
+  speech.rate = 0.95;
+  speechSynthesis.speak(speech);
+}
+
+function reply(message) {
+  const text = message.toLowerCase();
+  let answer;
+
+  if (text.includes("who are you")) {
+    answer = "I am AYDARH, your personal AI assistant. I am being developed to help you with your daily life, learning, planning and trading.";
+  } else if (text.includes("what can you do")) {
+    answer = "I am currently in development. My planned abilities include voice conversations, reminders, daily planning, learning assistance and AlphaX trading support.";
+  } else if (text.includes("motivation")) {
+    answer = "Stay disciplined. Small consistent actions create big results. Be patient, keep learning and never stop improving.";
+  } else if (text.includes("hello") || text.includes("hi")) {
+    answer = "Hello! I am here. What would you like us to work on today?";
+  } else if (text.includes("sannu")) {
+    answer = "Lafiya lau! Ina nan domin taimaka maka. Me kake so mu yi?";
+  } else if (text.includes("yaya")) {
+    answer = "Lafiya kalau! How can I help you today?";
+  } else if (text.includes("how far")) {
+    answer = "I dey here! How we go take move today?";
+  } else {
+    answer = "I have received your message. My full AI intelligence is not connected yet. That is one of our next development stages.";
+  }
+
+  addMessage(answer,"bot");
+  speak(answer);
+}
+
+function sendMessage() {
+  const input = document.getElementById("message");
+  const message = input.value.trim();
+  if (!message) return;
+  addMessage(message,"user");
+  input.value = "";
+  reply(message);
+}
+
+function quickAsk(question) {
+  addMessage(question,"user");
+  reply(question);
+}
+
+function startListening() {
+  const Recognition = window.SpeechRecognition ||
+                      window.webkitSpeechRecognition;
+
+  if (!Recognition) {
+    voiceStatus.textContent =
+      "Voice recognition unavailable. Try Chrome on Android.";
+    return;
+  }
+
+  const recognition = new Recognition();
+  recognition.lang = language.value;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    orb.classList.add("listening");
+    voiceStatus.textContent = "AYDARH is listening...";
+  };
+
+  recognition.onresult = (event) => {
+    const spoken = event.results[0][0].transcript;
+    addMessage(spoken,"user");
+    reply(spoken);
+  };
+
+  recognition.onerror = (event) => {
+    voiceStatus.textContent = "Voice error: " + event.error;
+  };
+
+  recognition.onend = () => {
+    orb.classList.remove("listening");
+    voiceStatus.textContent = "Tap the circle to speak";
+  };
+
+  recognition.start();
+}
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .catch(error => console.log("Offline setup:",error));
+  });
+}
+</script>
+</body>
+</html>
+
