@@ -2,347 +2,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07111f">
-  <meta name="description" content="AYDARH - Your personal AI assistant">
-  <link rel="manifest" href="manifest.json">
-  <title>AYDARH AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="AYDARH - Your personal AI assistant">
+<link rel="manifest" href="manifest.json">
+<title>AYDARH AI</title>
 
-  <style>
-    :root {
-      --bg: #07111f;
-      --panel: #101e30;
-      --panel2: #14263b;
-      --blue: #19c8ff;
-      --red: #ff435d;
-      --text: #edf6ff;
-      --muted: #91a7bd;
-      --border: #263c53;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #102b45, var(--bg) 55%);
-      color: var(--text);
-      font-family: Arial, sans-serif;
-    }
-
-    button, input, select { font: inherit; }
-
-    button {
-      cursor: pointer;
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-weight: bold;
-    }
-
-    .hidden { display: none !important; }
-
-    .app {
-      width: 100%;
-      max-width: 850px;
-      margin: auto;
-      padding: 16px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 0 20px;
-    }
-
-    .brand {
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      color: var(--blue);
-    }
-
-    .brand span { color: var(--red); }
-
-    .status {
-      color: #70f0b0;
-      font-size: 12px;
-    }
-
-    .panel {
-      background: rgba(16,30,48,.94);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 15px;
-    }
-
-    h2 { margin-top: 0; }
-
-    .muted { color: var(--muted); font-size: 13px; }
-
-    input, select {
-      width: 100%;
-      padding: 14px;
-      border-radius: 11px;
-      border: 1px solid var(--border);
-      background: #091727;
-      color: white;
-      margin: 8px 0;
-      outline: none;
-    }
-
-    input:focus, select:focus {
-      border-color: var(--blue);
-    }
-
-    .primary {
-      width: 100%;
-      background: var(--blue);
-      color: #00121c;
-      margin-top: 10px;
-    }
-
-    .secondary {
-      background: var(--panel2);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .danger {
-      background: #542333;
-      color: #ffdce2;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      margin-bottom: 14px;
-    }
-
-    .tabs button { white-space: nowrap; }
-
-    .tab-active {
-      background: var(--blue);
-      color: #00121c;
-    }
-
-    .orb-wrap {
-      display: flex;
-      justify-content: center;
-      padding: 12px;
-    }
-
-    #micButton {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      color: white;
-      background: radial-gradient(circle, #1d9dcf, #123b68);
-      border: 3px solid var(--blue);
-      box-shadow: 0 0 30px #19c8ff55;
-      font-size: 30px;
-    }
-
-    #micButton.listening {
-      background: radial-gradient(circle, #ff5369, #76243b);
-      border-color: var(--red);
-      box-shadow: 0 0 30px #ff435d88;
-    }
-
-    #chat {
-      height: 43vh;
-      min-height: 260px;
-      max-height: 500px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 5px 2px;
-    }
-
-    .message {
-      max-width: 88%;
-      padding: 13px;
-      border-radius: 14px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-    }
-
-    .user {
-      align-self: flex-end;
-      background: #124767;
-      border: 1px solid #187da8;
-    }
-
-    .assistant {
-      align-self: flex-start;
-      background: #192b40;
-      border: 1px solid #2c4762;
-    }
-
-    .chat-input {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .chat-input input { flex: 1; min-width: 0; }
-
-    .send {
-      background: var(--blue);
-      color: #00121c;
-      margin-top: 0;
-    }
-
-    .memory-item {
-      padding: 13px;
-      margin: 10px 0;
-      border-radius: 12px;
-      background: #0b1a2a;
-      border: 1px solid var(--border);
-      overflow-wrap: anywhere;
-    }
-
-    .memory-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .memory-actions button { flex: 1; }
-
-    .error { color: #ff8796; }
-    .success { color: #70f0b0; }
-
-    footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 11px;
-      padding: 15px;
-    }
-  </style>
+<style>
+:root {
+  --bg:#07111f;
+  --panel:#101e30;
+  --panel2:#14263b;
+  --blue:#19c8ff;
+  --red:#ff435d;
+  --text:#edf6ff;
+  --muted:#91a7bd;
+  --border:#263c53;
+}
+* {box-sizing:border-box}
+body {
+  margin:0; min-height:100vh;
+  background:radial-gradient(circle at top,#102b45,var(--bg) 55%);
+  color:var(--text); font-family:Arial,sans-serif;
+}
+button,input,select {font:inherit}
+button {
+  cursor:pointer; border:0; border-radius:12px;
+  padding:12px 16px; font-weight:bold;
+}
+button:disabled {opacity:.5;cursor:not-allowed}
+.hidden {display:none!important}
+.app {width:100%;max-width:950px;margin:auto;padding:16px}
+header {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;padding:12px 0 20px;
+}
+.brand {font-size:25px;font-weight:900;letter-spacing:3px;color:var(--blue)}
+.brand span {color:var(--red)}
+.status {color:#70f0b0;font-size:12px}
+.panel {
+  background:rgba(16,30,48,.94);border:1px solid var(--border);
+  border-radius:18px;padding:18px;margin-bottom:15px;
+}
+h2 {margin-top:0}
+.muted {color:var(--muted);font-size:13px}
+input,select {
+  width:100%;padding:14px;border-radius:11px;
+  border:1px solid var(--border);background:#091727;
+  color:white;margin:8px 0;outline:none;
+}
+input:focus,select:focus {border-color:var(--blue)}
+.primary {
+  background:var(--blue);color:#00121c;margin-top:10px;
+}
+.primary.full {width:100%}
+.secondary {
+  background:var(--panel2);color:var(--text);
+  border:1px solid var(--border);
+}
+.danger {background:#542333;color:#ffdce2}
+.tabs {
+  display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;
+}
+.tabs button {white-space:nowrap}
+.tab-active {background:var(--blue);color:#00121c}
+.orb-wrap {display:flex;justify-content:center;padding:12px}
+#micButton {
+  width:100px;height:100px;border-radius:50%;color:white;
+  background:radial-gradient(circle,#1d9dcf,#123b68);
+  border:3px solid var(--blue);box-shadow:0 0 30px #19c8ff55;
+  font-size:30px;
+}
+#micButton.listening {
+  background:radial-gradient(circle,#ff5369,#76243b);
+  border-color:var(--red);box-shadow:0 0 30px #ff435d88;
+}
+#chat {
+  height:43vh;min-height:260px;max-height:500px;
+  overflow-y:auto;display:flex;flex-direction:column;
+  gap:12px;padding:5px 2px;
+}
+.message {
+  max-width:88%;padding:13px;border-radius:14px;
+  line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;
+}
+.user {align-self:flex-end;background:#124767;border:1px solid #187da8}
+.assistant {align-self:flex-start;background:#192b40;border:1px solid #2c4762}
+.chat-input {display:flex;gap:8px;align-items:center}
+.chat-input input {flex:1;min-width:0}
+.send {background:var(--blue);color:#00121c;margin-top:0}
+.memory-item,.conversation-item {
+  padding:13px;margin:10px 0;border-radius:12px;
+  background:#0b1a2a;border:1px solid var(--border);
+  overflow-wrap:anywhere;
+}
+.memory-actions {display:flex;gap:8px;margin-top:10px}
+.memory-actions button {flex:1}
+.conversation-list {
+  max-height:280px;overflow-y:auto;margin-top:12px;
+}
+.conversation-item {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:8px;cursor:pointer;
+}
+.conversation-item.active {border-color:var(--blue);background:#102b40}
+.conversation-title {font-size:14px;overflow-wrap:anywhere}
+.conversation-date {font-size:11px;color:var(--muted);margin-top:5px}
+.error {color:#ff8796}
+.success {color:#70f0b0}
+footer {
+  text-align:center;color:var(--muted);font-size:11px;padding:15px;
+}
+@media(max-width:520px) {
+  .app {padding:11px}
+  .panel {padding:14px}
+  .conversation-item {align-items:flex-start}
+}
+</style>
 </head>
 
 <body>
 <div class="app">
 
-  <header>
-    <div>
-      <div class="brand">AYDAR<span>H</span></div>
-      <div class="muted">PERSONAL AI ASSISTANT</div>
+<header>
+  <div>
+    <div class="brand">AYDAR<span>H</span></div>
+    <div class="muted">PERSONAL AI ASSISTANT</div>
+  </div>
+  <div class="status" id="connectionStatus">● Engine online</div>
+</header>
+
+<!-- LOGIN -->
+<section id="loginScreen" class="panel">
+  <h2>Welcome back.</h2>
+  <p class="muted">Sign in to access your personal AYDARH assistant.</p>
+
+  <form id="loginForm">
+    <label for="password">Your AYDARH password</label>
+    <input id="password" type="password"
+      placeholder="Enter your password" required
+      autocomplete="current-password">
+    <button class="primary full" id="loginButton" type="submit">
+      SIGN IN
+    </button>
+  </form>
+
+  <p id="loginMessage" class="muted"></p>
+</section>
+
+<!-- MAIN APPLICATION -->
+<main id="mainApp" class="hidden">
+
+  <div class="tabs">
+    <button class="secondary tab-active" data-tab="assistantTab">Assistant</button>
+    <button class="secondary" data-tab="memoryTab">Memory</button>
+    <button class="secondary" data-tab="settingsTab">Settings</button>
+  </div>
+
+  <!-- ASSISTANT -->
+  <section id="assistantTab">
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+        <div>
+          <h2 style="margin-bottom:5px">Your assistant</h2>
+          <p class="muted" style="margin-top:0">Your conversations are saved.</p>
+        </div>
+        <button class="primary" id="newChatButton" type="button">+ NEW CHAT</button>
+      </div>
+
+      <h3>Conversation history</h3>
+      <div id="conversationList" class="conversation-list muted">
+        Loading conversations...
+      </div>
+      <button class="secondary" id="refreshChatsButton" type="button">
+        REFRESH HISTORY
+      </button>
     </div>
-    <div class="status" id="connectionStatus">● Engine online</div>
-  </header>
 
-  <!-- LOGIN -->
-  <section id="loginScreen" class="panel">
-    <h2>Welcome back.</h2>
-    <p class="muted">Sign in to access your personal AYDARH assistant.</p>
+    <div class="panel">
+      <h2 id="chatHeading">How can I help you?</h2>
+      <p class="muted">Talk to AYDARH or type your message below.</p>
 
-    <form id="loginForm">
-      <label for="password">Your AYDARH password</label>
-      <input id="password" type="password"
-        placeholder="Enter your password" required autocomplete="current-password">
-      <button class="primary" id="loginButton" type="submit">SIGN IN</button>
-    </form>
+      <label for="language">Communication language</label>
+      <select id="language">
+        <option value="en-NG">English</option>
+        <option value="ha-NG">Hausa</option>
+        <option value="en-NG">Nigerian Pidgin</option>
+      </select>
 
-    <p id="loginMessage" class="muted"></p>
+      <div class="orb-wrap">
+        <button id="micButton" title="Start voice input" type="button">🎙</button>
+      </div>
+
+      <p id="voiceStatus" class="muted" style="text-align:center">
+        Tap the microphone to speak
+      </p>
+
+      <div id="chat">
+        <div class="message assistant">
+          Hello! I'm AYDARH, your personal AI assistant. How can I help you today?
+        </div>
+      </div>
+
+      <form id="chatForm" class="chat-input">
+        <input id="messageInput" placeholder="Message AYDARH..."
+          autocomplete="off" required>
+        <button class="send" id="sendButton" type="submit">SEND</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>Quick commands</h3>
+      <div class="tabs">
+        <button class="secondary quick" data-message="Introduce yourself and explain what you can do.">About you</button>
+        <button class="secondary quick" data-message="Help me plan my day.">Plan my day</button>
+        <button class="secondary quick" data-message="Teach me something useful today.">Teach me</button>
+      </div>
+    </div>
+
+    <div id="suggestionArea"></div>
   </section>
 
-  <!-- MAIN APPLICATION -->
-  <main id="mainApp" class="hidden">
-
-    <div class="tabs">
-      <button class="secondary tab-active" data-tab="assistantTab">Assistant</button>
-      <button class="secondary" data-tab="memoryTab">Memory</button>
-      <button class="secondary" data-tab="settingsTab">Settings</button>
+  <!-- MEMORY -->
+  <section id="memoryTab" class="hidden">
+    <div class="panel">
+      <h2>Memory centre</h2>
+      <p class="muted">
+        AYDARH only saves a suggested memory after you approve it.
+      </p>
+      <button class="secondary" id="refreshMemory">REFRESH MEMORIES</button>
     </div>
 
-    <!-- ASSISTANT -->
-    <section id="assistantTab">
-      <div class="panel">
-        <h2>How can I help you?</h2>
-        <p class="muted">Talk to AYDARH or type your message below.</p>
+    <div class="panel">
+      <h3>Pending approval</h3>
+      <div id="pendingMemories" class="muted">Loading...</div>
+    </div>
 
-        <label for="language">Communication language</label>
-        <select id="language">
-          <option value="en-NG">English</option>
-          <option value="ha-NG">Hausa</option>
-          <option value="en-NG">Nigerian Pidgin</option>
-        </select>
+    <div class="panel">
+      <h3>Approved memories</h3>
+      <div id="approvedMemories" class="muted">Loading...</div>
+    </div>
+  </section>
 
-        <div class="orb-wrap">
-          <button id="micButton" title="Start voice input" type="button">🎙</button>
-        </div>
-        <p id="voiceStatus" class="muted" style="text-align:center">
-          Tap the microphone to speak
-        </p>
+  <!-- SETTINGS -->
+  <section id="settingsTab" class="hidden">
+    <div class="panel">
+      <h2>Settings</h2>
+      <p>Assistant: AYDARH</p>
+      <p>Backend: Cloudflare Workers AI</p>
+      <p>Memory: Approval required</p>
+      <p>Conversations: Cloudflare KV storage</p>
+      <p>Session: Expires after 12 hours</p>
+      <p>Version: 0.4.0</p>
+      <button class="danger" id="logoutButton">LOG OUT</button>
+    </div>
+  </section>
 
-        <div id="chat">
-          <div class="message assistant">
-            Hello! I'm AYDARH, your personal AI assistant. How can I help you today?
-          </div>
-        </div>
+</main>
 
-        <form id="chatForm" class="chat-input">
-          <input id="messageInput" placeholder="Message AYDARH..." autocomplete="off" required>
-          <button class="send" type="submit">SEND</button>
-        </form>
-      </div>
-
-      <div class="panel">
-        <h3>Quick commands</h3>
-        <div class="tabs">
-          <button class="secondary quick" data-message="Introduce yourself and explain what you can do.">About you</button>
-          <button class="secondary quick" data-message="Help me plan my day.">Plan my day</button>
-          <button class="secondary quick" data-message="Teach me something useful today.">Teach me</button>
-        </div>
-      </div>
-
-      <div id="suggestionArea"></div>
-    </section>
-
-    <!-- MEMORY -->
-    <section id="memoryTab" class="hidden">
-      <div class="panel">
-        <h2>Memory centre</h2>
-        <p class="muted">
-          AYDARH only saves a suggested memory after you approve it.
-        </p>
-        <button class="secondary" id="refreshMemory">REFRESH MEMORIES</button>
-      </div>
-
-      <div class="panel">
-        <h3>Pending approval</h3>
-        <div id="pendingMemories" class="muted">Loading...</div>
-      </div>
-
-      <div class="panel">
-        <h3>Approved memories</h3>
-        <div id="approvedMemories" class="muted">Loading...</div>
-      </div>
-    </section>
-
-    <!-- SETTINGS -->
-    <section id="settingsTab" class="hidden">
-      <div class="panel">
-        <h2>Settings</h2>
-        <p>Assistant: AYDARH</p>
-        <p>Backend: Cloudflare Workers AI</p>
-        <p>Memory: Approval required</p>
-        <p>Session: Expires after 12 hours</p>
-        <button class="danger" id="logoutButton">LOG OUT</button>
-      </div>
-    </section>
-  </main>
-
-  <footer>AYDARH AI · PERSONAL ASSISTANT · VERSION 0.3.0</footer>
+<footer>AYDARH AI · PERSONAL ASSISTANT · VERSION 0.4.0</footer>
 </div>
 
 <script>
@@ -352,9 +272,10 @@ const API = "https://aydarh-ai-engine.yakubuabubakarabba.workers.dev";
 const TOKEN_KEY = "aydarh_session_v03";
 
 let token = sessionStorage.getItem(TOKEN_KEY) || "";
-let conversation = [];
+let currentConversationId = null;
 let recognition = null;
 let speakingEnabled = true;
+let sending = false;
 
 const $ = id => document.getElementById(id);
 
@@ -400,12 +321,35 @@ function showApp() {
 
 function logout() {
   token = "";
+  currentConversationId = null;
   sessionStorage.removeItem(TOKEN_KEY);
-  conversation = [];
   showLogin();
   $("loginMessage").textContent = "You have been logged out.";
 }
 
+function resetChatDisplay() {
+  $("chat").innerHTML = "";
+  $("chat").appendChild(createMessageElement(
+    "assistant",
+    "Hello! I'm AYDARH. How can I help you today?"
+  ));
+  $("chatHeading").textContent = "How can I help you?";
+  $("suggestionArea").innerHTML = "";
+}
+
+function createMessageElement(role, content) {
+  const div = document.createElement("div");
+  div.className = "message " + role;
+  div.textContent = content || "";
+  return div;
+}
+
+function addMessage(role, content) {
+  $("chat").appendChild(createMessageElement(role, content));
+  $("chat").scrollTop = $("chat").scrollHeight;
+}
+
+// LOGIN
 $("loginForm").addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -419,8 +363,8 @@ $("loginForm").addEventListener("submit", async event => {
   try {
     const response = await fetch(API + "/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password })
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({password})
     });
 
     const data = await response.json();
@@ -432,8 +376,15 @@ $("loginForm").addEventListener("submit", async event => {
     token = data.token;
     sessionStorage.setItem(TOKEN_KEY, token);
     $("password").value = "";
+
     showApp();
-    await loadMemories();
+    resetChatDisplay();
+
+    await Promise.all([
+      loadMemories(),
+      loadConversations()
+    ]);
+
   } catch (error) {
     $("loginMessage").textContent = error.message;
     $("loginMessage").className = "error";
@@ -443,47 +394,173 @@ $("loginForm").addEventListener("submit", async event => {
   }
 });
 
-function addMessage(role, content) {
-  const div = document.createElement("div");
-  div.className = "message " + role;
-  div.textContent = content;
-  $("chat").appendChild(div);
-  $("chat").scrollTop = $("chat").scrollHeight;
+// CONVERSATION HISTORY
+function getConversationId(item) {
+  return item.id || item.conversationId || item.uuid || null;
 }
 
+function getConversationTitle(item) {
+  return item.title || item.name || "New conversation";
+}
+
+function getConversationDate(item) {
+  const value = item.updatedAt || item.createdAt || item.updated_at;
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleString();
+}
+
+async function loadConversations() {
+  if (!token) return;
+
+  const container = $("conversationList");
+  container.textContent = "Loading conversations...";
+
+  try {
+    const data = await api("/conversations");
+    const conversations = data.conversations || [];
+
+    container.innerHTML = "";
+
+    if (!conversations.length) {
+      container.textContent = "No saved conversations yet. Start a new chat!";
+      return;
+    }
+
+    conversations.forEach(item => {
+      const id = getConversationId(item);
+      if (!id) return;
+
+      const row = document.createElement("div");
+      row.className = "conversation-item" +
+        (id === currentConversationId ? " active" : "");
+
+      const details = document.createElement("div");
+      details.style.flex = "1";
+
+      const title = document.createElement("div");
+      title.className = "conversation-title";
+      title.textContent = getConversationTitle(item);
+
+      const date = document.createElement("div");
+      date.className = "conversation-date";
+      date.textContent = getConversationDate(item);
+
+      details.append(title, date);
+      row.appendChild(details);
+
+      row.addEventListener("click", () => openConversation(id));
+      container.appendChild(row);
+    });
+
+  } catch (error) {
+    container.textContent = "Unable to load conversations: " + error.message;
+  }
+}
+
+async function openConversation(id) {
+  if (!id) return;
+
+  $("connectionStatus").textContent = "● Opening conversation...";
+
+  try {
+    const data = await api(
+      "/conversations/" + encodeURIComponent(id)
+    );
+
+    const conversation = data.conversation || data;
+    const messages = conversation.messages || [];
+
+    currentConversationId = id;
+    $("chat").innerHTML = "";
+
+    if (!messages.length) {
+      addMessage("assistant", "This conversation has no messages yet.");
+    } else {
+      messages.forEach(message => {
+        if (message.role === "user" || message.role === "assistant") {
+          addMessage(message.role, message.content || "");
+        }
+      });
+    }
+
+    $("chatHeading").textContent =
+      conversation.title || conversation.name || "Saved conversation";
+
+    $("connectionStatus").textContent = "● Engine online";
+    await loadConversations();
+
+  } catch (error) {
+    $("connectionStatus").textContent = "● Connection issue";
+    alert("Could not open conversation: " + error.message);
+  }
+}
+
+function startNewChat() {
+  currentConversationId = null;
+  resetChatDisplay();
+  loadConversations();
+  $("messageInput").focus();
+}
+
+$("newChatButton").addEventListener("click", startNewChat);
+$("refreshChatsButton").addEventListener("click", loadConversations);
+
+// CHAT
 async function sendMessage(message) {
   message = message.trim();
-  if (!message) return;
+
+  if (!message || sending || !token) return;
+
+  sending = true;
+  $("sendButton").disabled = true;
 
   addMessage("user", message);
-  conversation.push({ role: "user", content: message });
-
   $("messageInput").value = "";
   $("connectionStatus").textContent = "● AYDARH is thinking...";
+
+  const requestBody = {message};
+
+  if (currentConversationId) {
+    requestBody.conversationId = currentConversationId;
+  }
 
   try {
     const data = await api("/chat", {
       method: "POST",
-      body: JSON.stringify({ messages: conversation })
+      body: JSON.stringify(requestBody)
     });
+
+    if (data.conversationId) {
+      currentConversationId = data.conversationId;
+    }
 
     const reply = data.reply || "I couldn't generate a response.";
 
-    conversation.push({ role: "assistant", content: reply });
-    conversation = conversation.slice(-12);
-
     addMessage("assistant", reply);
+
+    if (data.conversationTitle) {
+      $("chatHeading").textContent = data.conversationTitle;
+    }
 
     if (data.memorySuggestion) {
       showMemorySuggestion(data.memorySuggestion);
     }
 
     if (speakingEnabled) speak(reply);
+
     $("connectionStatus").textContent = "● Engine online";
+    await loadConversations();
 
   } catch (error) {
     addMessage("assistant", "Sorry, something went wrong: " + error.message);
     $("connectionStatus").textContent = "● Connection issue";
+  } finally {
+    sending = false;
+    $("sendButton").disabled = false;
   }
 }
 
@@ -535,10 +612,7 @@ function setupRecognition() {
 }
 
 $("micButton").addEventListener("click", () => {
-  if (!recognition) {
-    setupRecognition();
-  }
-
+  if (!recognition) setupRecognition();
   if (!recognition) return;
 
   recognition.lang = $("language").value;
@@ -546,8 +620,7 @@ $("micButton").addEventListener("click", () => {
   try {
     recognition.start();
   } catch {
-    $("voiceStatus").textContent =
-      "Please wait a moment and try again.";
+    $("voiceStatus").textContent = "Please wait a moment and try again.";
   }
 });
 
@@ -565,7 +638,7 @@ function speak(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-// MEMORY APPROVAL
+// MEMORY SUGGESTION
 function showMemorySuggestion(memory) {
   const area = $("suggestionArea");
   area.innerHTML = "";
@@ -577,7 +650,7 @@ function showMemorySuggestion(memory) {
   heading.textContent = "Memory approval requested";
 
   const text = document.createElement("p");
-  text.textContent = memory.text;
+  text.textContent = memory.text || "";
 
   const note = document.createElement("p");
   note.className = "muted";
@@ -598,12 +671,13 @@ function showMemorySuggestion(memory) {
     try {
       await api("/memory/approve", {
         method: "POST",
-        body: JSON.stringify({ id: memory.id })
+        body: JSON.stringify({id: memory.id})
       });
 
       panel.remove();
       addMessage("assistant", "Memory approved and saved.");
       await loadMemories();
+
     } catch (error) {
       alert(error.message);
     }
@@ -613,12 +687,13 @@ function showMemorySuggestion(memory) {
     try {
       await api("/memory/reject", {
         method: "POST",
-        body: JSON.stringify({ id: memory.id })
+        body: JSON.stringify({id: memory.id})
       });
 
       panel.remove();
       addMessage("assistant", "Memory suggestion rejected.");
       await loadMemories();
+
     } catch (error) {
       alert(error.message);
     }
@@ -629,6 +704,7 @@ function showMemorySuggestion(memory) {
   area.appendChild(panel);
 }
 
+// MEMORY CENTRE
 async function loadMemories() {
   if (!token) return;
 
@@ -664,7 +740,7 @@ function renderPending(memories) {
     item.className = "memory-item";
 
     const text = document.createElement("p");
-    text.textContent = memory.text;
+    text.textContent = memory.text || "";
 
     const actions = document.createElement("div");
     actions.className = "memory-actions";
@@ -681,20 +757,24 @@ function renderPending(memories) {
       try {
         await api("/memory/approve", {
           method: "POST",
-          body: JSON.stringify({ id: memory.id })
+          body: JSON.stringify({id: memory.id})
         });
         await loadMemories();
-      } catch (e) { alert(e.message); }
+      } catch (error) {
+        alert(error.message);
+      }
     };
 
     reject.onclick = async () => {
       try {
         await api("/memory/reject", {
           method: "POST",
-          body: JSON.stringify({ id: memory.id })
+          body: JSON.stringify({id: memory.id})
         });
         await loadMemories();
-      } catch (e) { alert(e.message); }
+      } catch (error) {
+        alert(error.message);
+      }
     };
 
     actions.append(approve, reject);
@@ -717,7 +797,7 @@ function renderApproved(memories) {
     item.className = "memory-item";
 
     const text = document.createElement("p");
-    text.textContent = memory.text;
+    text.textContent = memory.text || "";
 
     const remove = document.createElement("button");
     remove.className = "danger";
@@ -729,10 +809,12 @@ function renderApproved(memories) {
       try {
         await api("/memory/delete", {
           method: "POST",
-          body: JSON.stringify({ id: memory.id })
+          body: JSON.stringify({id: memory.id})
         });
         await loadMemories();
-      } catch (e) { alert(e.message); }
+      } catch (error) {
+        alert(error.message);
+      }
     };
 
     item.append(text, remove);
@@ -752,13 +834,14 @@ document.querySelectorAll("[data-tab]").forEach(button => {
 
     $(button.dataset.tab).classList.remove("hidden");
 
-    document.querySelectorAll("[data-tab]").forEach(b => {
-      b.classList.remove("tab-active");
+    document.querySelectorAll("[data-tab]").forEach(tab => {
+      tab.classList.remove("tab-active");
     });
 
     button.classList.add("tab-active");
 
     if (button.dataset.tab === "memoryTab") loadMemories();
+    if (button.dataset.tab === "assistantTab") loadConversations();
   });
 });
 
@@ -768,18 +851,19 @@ async function start() {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 
+  setupRecognition();
+
   if (token) {
     showApp();
-    try {
-      await loadMemories();
-    } catch {
-      logout();
-    }
+
+    await Promise.all([
+      loadMemories(),
+      loadConversations()
+    ]);
+
   } else {
     showLogin();
   }
-
-  setupRecognition();
 }
 
 start();
